@@ -6,7 +6,7 @@ on: workflow_dispatch
 env:
   AZURE_RG_NAME: openhackapis
   AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1'
-  AZURE_FUNCTION_NAME: fnapp4pm
+  AZURE_FUNCTION_NAME: fnapp4team10
 
 permissions:
   id-token: write
@@ -22,16 +22,6 @@ jobs:
             client-id: ${{ secrets.AZURE_CLIENT_ID }}
             tenant-id: ${{ secrets.AZURE_TENANT_ID }}
             subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-
-      - name: Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
-
-      - name: Evaluate Resource Groupe Name
-        run: echo AZURE_RG_NAME=$AZURE_RG_NAME-${{steps.date.outputs.date}} >> $GITHUB_ENV
-
-      - name: Evaluate unique Function Name
-        run: echo AZURE_FUNCTION_NAME=$AZURE_FUNCTION_NAME-${{steps.date.outputs.date}} >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v2
