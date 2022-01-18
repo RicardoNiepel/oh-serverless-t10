@@ -17,19 +17,20 @@ namespace T10Company.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            string name = req.Query["name"];
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
+            if(data.rating < 0 || data.rating > 5) {
+                return new BadRequestObjectResult("rating field needs to be an integer from 0 to 5");
+            }
+            
+            data.id = Guid.NewGuid();
+            data.timestamp = DateTime.UtcNow;
 
-            return new OkObjectResult(responseMessage);
+            // TODO: Validate both userId and productId by calling the existing API endpoints. You can find a user id to test with from the sample payload above
+            // TODO: Validate both userId and productId by calling the existing API endpoints. You can find a user id to test with from the sample payload above
+
+            return new OkObjectResult(data);
         }
     }
 }
