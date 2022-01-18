@@ -14,7 +14,7 @@ namespace T10Company.Function
     public static class GetRatings
     {
         [FunctionName("GetRatings")]
-        public static async Task<IActionResult> Run(
+        public static Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
             [CosmosDB(
                 databaseName: "teamtendatabase",
