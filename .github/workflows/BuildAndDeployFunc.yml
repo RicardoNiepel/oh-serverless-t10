@@ -7,18 +7,21 @@ env:
   AZURE_FUNCTION_PROJ_PATH: Functions
   ROOT_SOLUTION_PATH: Functions
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    
-    steps:    
-      - name: Get the latest source code commit
-        uses: actions/checkout@v2
 
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CLIENT_ID }}
+permissions:
+      id-token: write
+      contents: read
+      
+jobs: 
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Get current date
         id: date
