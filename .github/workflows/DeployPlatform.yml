@@ -4,7 +4,7 @@ name: Deploy Azure Platform
 on: workflow_dispatch
 
 env:
-  AZURE_RG_NAME: openhackapis
+  AZURE_RG_NAME: openhackapis-2022-01-18
   AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1'
   AZURE_FUNCTION_NAME: fnapp4team10
 
