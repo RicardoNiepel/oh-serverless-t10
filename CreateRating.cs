@@ -15,7 +15,7 @@ namespace T10Company.Function
   {
     [FunctionName("CreateRating")]
     public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "rating")] HttpRequest req,
         [CosmosDB(
                 databaseName: "teamtendatabase",
                 collectionName: "RatingItems",

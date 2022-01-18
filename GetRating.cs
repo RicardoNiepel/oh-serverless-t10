@@ -13,14 +13,14 @@ namespace T10Company.Function
     public static class GetRating
     {
         [FunctionName("GetRating")]
-        public static Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+        public static IActionResult Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "rating/{ratingId}")] HttpRequest req,
             [CosmosDB(
                 databaseName: "teamtendatabase",
                 collectionName: "RatingItems",
                 ConnectionStringSetting = "CosmosDBConnection",
-                Id = "{Query.ratingId}",
-                PartitionKey = "{Query.ratingId}")] dynamic ratingItem,
+                Id = "{ratingId}",
+                PartitionKey = "{ratingId}")] dynamic ratingItem,
         ILogger log)
     {
       if (ratingItem == null)
