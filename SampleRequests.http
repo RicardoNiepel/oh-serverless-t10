@@ -1,6 +1,6 @@
 ### Params
-//@baseURL = http://localhost:7071/api
-@baseURL = https://fnapp4team10.azurewebsites.net/api
+@baseURL = http://localhost:7071/api
+//@baseURL = https://fnapp4team10.azurewebsites.net/api
 
 
 @userId = cc20a6fb-a91f-4192-874d-132493685376

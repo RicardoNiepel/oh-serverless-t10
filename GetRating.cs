@@ -10,27 +10,27 @@ using Newtonsoft.Json;
 
 namespace T10Company.Function
 {
-    public static class GetRating
-    {
-        [FunctionName("GetRating")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            [CosmosDB(
+  public static class GetRating
+  {
+    [FunctionName("GetRating")]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+        [CosmosDB(
                 databaseName: "teamtendatabase",
                 collectionName: "RatingItems",
                 ConnectionStringSetting = "CosmosDBConnection",
                 Id = "{Query.ratingId}",
                 PartitionKey = "{Query.ratingId}")] dynamic ratingItem,
-            ILogger log)
-        {
-            if (ratingItem == null)
-            {
-                return new NotFoundObjectResult($"No rating found with id {req.Query["ratingId"]}");
-            }
-            else
-            {
-                return new OkObjectResult(ratingItem);
-            }
-        }
+        ILogger log)
+    {
+      if (ratingItem == null)
+      {
+        return new NotFoundObjectResult($"No rating found with id {req.Query["ratingId"]}");
+      }
+      else
+      {
+        return new OkObjectResult(ratingItem);
+      }
     }
+  }
 }
