@@ -1,12 +1,15 @@
 ### Params
-@baseURL = http://localhost:7071/api
+//@baseURL = http://localhost:7071/api
+@baseURL = https://fnapp4team10.azurewebsites.net/api
 
-@ratingId = 6602b538-ad7f-44b6-976b-75f226c64af3
+
+@userId = cc20a6fb-a91f-4192-874d-132493685376
+@ratingId = 2329fd7b-3491-4949-9111-9fb3f5093d2d
 
 
 ### URLs
 @createRatingURL = {{baseURL}}/CreateRating
-@getRatingsURL = {{baseURL}}/GetRatings
+@getRatingsURL = {{baseURL}}/GetRatings?userId={{userId}}
 @getRatingURL = {{baseURL}}/GetRating?ratingId={{ratingId}}
 
 
@@ -22,7 +25,7 @@ POST {{createRatingURL}}
 }
 
 
-### Get all ratings
+### Get all ratings by userId
 GET {{getRatingsURL}}
 
 
