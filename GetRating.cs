@@ -15,21 +15,22 @@ namespace T10Company.Function
         [FunctionName("GetRating")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [CosmosDB(
+                databaseName: "teamtendatabase",
+                collectionName: "RatingItems",
+                ConnectionStringSetting = "CosmosDBConnection",
+                Id = "{Query.ratingId}",
+                PartitionKey = "{Query.ratingId}")] dynamic ratingItem,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            string name = req.Query["name"];
-
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
-
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+            if (ratingItem == null)
+            {
+                return new NotFoundObjectResult($"No rating found with id {req.Query["ratingId"]}");
+            }
+            else
+            {
+                return new OkObjectResult(ratingItem);
+            }
         }
     }
 }
