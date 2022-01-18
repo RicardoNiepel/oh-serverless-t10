@@ -37,7 +37,7 @@
     },
     "runtime": {
       "type": "string",
-      "defaultValue": "dotnet-isolated",
+      "defaultValue": "dotnet",
       "allowedValues": [
         "node",
         "dotnet",
