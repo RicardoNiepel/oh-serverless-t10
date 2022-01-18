@@ -8,15 +8,20 @@ env:
   AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1' 
   AZURE_FUNCTION_NAME: fnapp4pm
 
-jobs:
-  deploy-arm-template:
+permissions:
+      id-token: write
+      contents: read
+      
+jobs: 
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: 'Az CLI login'
+      uses: azure/login@v1
+      with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Get current date
         id: date
