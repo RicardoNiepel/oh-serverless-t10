@@ -16,6 +16,11 @@ namespace T10Company.Function
         [FunctionName("CreateRating")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [CosmosDB(
+                databaseName: "teamtendatabase",
+                collectionName: "RatingItems",
+                ConnectionStringSetting = "CosmosDBConnection")]
+                IAsyncCollector<dynamic> ratingItemsOut,
             ILogger log)
         {
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -39,9 +44,9 @@ namespace T10Company.Function
             {
                 return new NotFoundObjectResult($"No product found with id {data.productId}");
             }
-            
-            // TODO: Use a data service to store the ratings information to the backend
 
+            await ratingItemsOut.AddAsync(data);
+            
             return new OkObjectResult(data);
         }
     }
