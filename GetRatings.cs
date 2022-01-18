@@ -14,12 +14,12 @@ using System.Linq;
 
 namespace T10Company.Function
 {
-  public static class GetRatings
-  {
-    [FunctionName("GetRatings")]
-    public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-        [CosmosDB(
+    public static class GetRatings
+    {
+        [FunctionName("GetRatings")]
+        public static Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [CosmosDB(
                 databaseName: "teamtendatabase",
                 collectionName: "RatingItems",
                 ConnectionStringSetting = "CosmosDBConnection"

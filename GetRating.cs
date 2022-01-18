@@ -10,12 +10,12 @@ using Newtonsoft.Json;
 
 namespace T10Company.Function
 {
-  public static class GetRating
-  {
-    [FunctionName("GetRating")]
-    public static async Task<IActionResult> Run(
-        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-        [CosmosDB(
+    public static class GetRating
+    {
+        [FunctionName("GetRating")]
+        public static Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
+            [CosmosDB(
                 databaseName: "teamtendatabase",
                 collectionName: "RatingItems",
                 ConnectionStringSetting = "CosmosDBConnection",
