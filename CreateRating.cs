@@ -7,6 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
 
 namespace T10Company.Function
 {
@@ -27,8 +28,19 @@ namespace T10Company.Function
             data.id = Guid.NewGuid();
             data.timestamp = DateTime.UtcNow;
 
-            // TODO: Validate both userId and productId by calling the existing API endpoints. You can find a user id to test with from the sample payload above
-            // TODO: Validate both userId and productId by calling the existing API endpoints. You can find a user id to test with from the sample payload above
+            var client = new HttpClient();
+            var respUserId = await client.GetAsync($"https://serverlessohapi.azurewebsites.net/api/GetUser?userId={data.userId}");
+            if (!respUserId.IsSuccessStatusCode)
+            {
+                return new NotFoundObjectResult($"No user found with id {data.userId}");
+            }
+            var respProductId = await client.GetAsync($"https://serverlessohapi.azurewebsites.net/api/GetProduct?productId={data.productId}");
+            if (!respProductId.IsSuccessStatusCode)
+            {
+                return new NotFoundObjectResult($"No product found with id {data.productId}");
+            }
+            
+            // TODO: Use a data service to store the ratings information to the backend
 
             return new OkObjectResult(data);
         }
