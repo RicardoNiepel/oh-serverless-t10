@@ -4,24 +4,24 @@ name: Deploy Azure Platform
 on: workflow_dispatch
 
 env:
-  AZURE_RG_NAME: openhackapis   
-  AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1' 
+  AZURE_RG_NAME: openhackapis
+  AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1'
   AZURE_FUNCTION_NAME: fnapp4pm
 
 permissions:
-      id-token: write
-      contents: read
-      
-jobs: 
+  id-token: write
+  contents: read
+
+jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Az CLI login'
-      uses: azure/login@v1
-      with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Get current date
         id: date
@@ -43,7 +43,7 @@ jobs:
           region: westeurope
           subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
           template: ./deployPlatform/deployResourceGroup.json
-          parameters: 
+          parameters:
             rgName="${{ env.AZURE_RG_NAME }}"
             location="westeurope"
 
@@ -53,6 +53,5 @@ jobs:
           subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.AZURE_RG_NAME }}
           template: ./deployPlatform/deployFunctionRuntime.json
-          parameters: 
+          parameters:
             appName="${{ env.AZURE_FUNCTION_NAME }}"
-
