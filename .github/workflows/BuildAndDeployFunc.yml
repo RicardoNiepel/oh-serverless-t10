@@ -4,8 +4,8 @@ on: workflow_dispatch
   
 env:
   AZURE_FUNCTION_NAME: fnapp4team10
-  AZURE_FUNCTION_PROJ_PATH: Functions
-  ROOT_SOLUTION_PATH: Functions
+  AZURE_FUNCTION_PROJ_PATH: .
+  ROOT_SOLUTION_PATH: .
 
 
 permissions:
@@ -57,4 +57,3 @@ jobs:
         with:
           app-name: ${{ env.AZURE_FUNCTION_NAME }}
           package: '${{ env.AZURE_FUNCTION_PROJ_PATH }}/output'
-          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
