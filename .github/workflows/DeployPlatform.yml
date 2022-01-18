@@ -1,0 +1,53 @@
+# File: .github/workflows/platform.yml
+name: Deploy Azure Platform
+
+on: workflow_dispatch
+
+env:
+  AZURE_RG_NAME: openhackapis   
+  AZURE_SUBSCRIPTION_ID: 'f6f8c9b0-0f67-4eac-a65f-6c3035e1bdb1' 
+  AZURE_FUNCTION_NAME: fnapp4pm
+
+jobs:
+  deploy-arm-template:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Evaluate Resource Groupe Name
+        run: echo AZURE_RG_NAME=$AZURE_RG_NAME-${{steps.date.outputs.date}} >> $GITHUB_ENV
+
+      - name: Evaluate unique Function Name
+        run: echo AZURE_FUNCTION_NAME=$AZURE_FUNCTION_NAME-${{steps.date.outputs.date}} >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Create Resource Group
+        uses: azure/arm-deploy@v1
+        with:
+          scope: subscription
+          region: westeurope
+          subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          template: ./deployPlatform/deployResourceGroup.json
+          parameters: 
+            rgName="${{ env.AZURE_RG_NAME }}"
+            location="westeurope"
+
+      - name: Depoy Function Runtime
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.AZURE_RG_NAME }}
+          template: ./deployPlatform/deployFunctionRuntime.json
+          parameters: 
+            appName="${{ env.AZURE_FUNCTION_NAME }}"
+

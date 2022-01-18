@@ -1,0 +1,57 @@
+name: Test and Deploy (Functions Action)
+
+on: workflow_dispatch
+  
+env:
+  AZURE_FUNCTION_NAME: fnapp4team10
+  AZURE_FUNCTION_PROJ_PATH: Functions
+  ROOT_SOLUTION_PATH: Functions
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:    
+      - name: Get the latest source code commit
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CLIENT_ID }}
+
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
+
+      - name: Evaluate unique Function Name
+        run: echo AZURE_FUNCTION_NAME=$AZURE_FUNCTION_NAME-${{steps.date.outputs.date}} >> $GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.100'
+        
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: ${{ env.ROOT_SOLUTION_PATH }}
+
+      - name: Build for Testing
+        run: dotnet build --no-restore
+        working-directory: ${{ env.ROOT_SOLUTION_PATH }}
+      
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+        working-directory: ${{ env.ROOT_SOLUTION_PATH }}
+      
+      - name: Build Function App for Release
+        run: dotnet build --configuration Release --output ./output
+        working-directory: ${{ env.AZURE_FUNCTION_PROJ_PATH }}
+
+      - name: 'Run Azure Functions Action'
+        uses: Azure/functions-action@v1
+        id: fa
+        with:
+          app-name: ${{ env.AZURE_FUNCTION_NAME }}
+          package: '${{ env.AZURE_FUNCTION_PROJ_PATH }}/output'
+          publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
