@@ -52,8 +52,16 @@ namespace OH.Challenge6
                     log.LogError(await response.Content.ReadAsStringAsync());
                     response.EnsureSuccessStatusCode();
                 }
+
+
                 var myresponse = await response.Content.ReadAsAsync<ExpandoObject>();
-                await orderItemsOut.AddAsync(myresponse);
+                var order = new
+                {
+                    id = Guid.NewGuid(), 
+                    order = myresponse
+                };
+
+                await orderItemsOut.AddAsync(order);
 
                 log.LogInformation($"Combined order for {id}");
             }
