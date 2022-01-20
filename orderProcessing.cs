@@ -8,6 +8,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Dynamic;
 
 namespace OH.Challenge6
 {
@@ -19,6 +20,12 @@ namespace OH.Challenge6
             [Blob("orders/{id}-OrderHeaderDetails.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob OrderHeaderDetails,
             [Blob("orders/{id}-OrderLineItems.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob OrderLineItems,
             [Blob("orders/{id}-ProductInformation.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob ProductInformation,
+            [CosmosDB(
+                databaseName: "teamtendatabase",
+                collectionName: "Orders",
+                ConnectionStringSetting = "CosmosDBConnection")]
+                IAsyncCollector<dynamic> orderItemsOut,
+
             string id, ILogger log)
         {
             log.LogInformation($"C# Blob trigger function Processed blob\n Name:{id}");
@@ -45,6 +52,8 @@ namespace OH.Challenge6
                     log.LogError(await response.Content.ReadAsStringAsync());
                     response.EnsureSuccessStatusCode();
                 }
+                var myresponse = await response.Content.ReadAsAsync<ExpandoObject>();
+                await orderItemsOut.AddAsync(myresponse);
 
                 log.LogInformation($"Combined order for {id}");
             }
