@@ -54,7 +54,6 @@ namespace OH.Challenge6
                 }
 
                 var combineOrderResponse = JsonConvert.DeserializeObject<dynamic>(await response.Content.ReadAsStringAsync());
-                //var myresponse = await response.Content.ReadAsAsync<ExpandoObject>();
                 var order = new
                 {
                     id = Guid.NewGuid(),
