@@ -7,6 +7,7 @@ using Microsoft.Azure.Storage.Blob;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace OH.Challenge6
 {
@@ -35,12 +36,9 @@ namespace OH.Challenge6
 
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("team10oh", "1.0.0"));
 
-                //string reqbody = "{\"orderHeaderDetailsCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-OrderHeaderDetails.csv\",\"orderLineItemsCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-OrderLineItems.csv\",\"productInformationCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-ProductInformation.csv\"}";
-
-                var response = await client.PostAsJsonAsync("https://serverlessohmanagementapi.trafficmanager.net/api/order/combineOrderContent", request);
-
-                //var sample = await response.RequestMessage.Content.ReadAsStringAsync();
+                var response = await client.PostAsync("https://serverlessohmanagementapi.trafficmanager.net/api/order/combineOrderContent", new StringContent(JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json"));
 
                 if (!response.IsSuccessStatusCode)
                 {
