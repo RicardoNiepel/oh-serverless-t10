@@ -14,7 +14,7 @@ namespace OH.Challenge6
     {
         [FunctionName("orderProcessing")]
         public async Task Run(
-            [BlobTrigger("orders/{id}-{type}.csv", Connection = "team10ohchallenge6orders_STORAGE")]Stream myBlob, 
+            [BlobTrigger("orders/{id}-{type}.csv", Connection = "team10ohchallenge6orders_STORAGE")]Stream myBlob,
             [Blob("orders/{id}-OrderHeaderDetails.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob OrderHeaderDetails,
             [Blob("orders/{id}-OrderLineItems.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob OrderLineItems,
             [Blob("orders/{id}-ProductInformation.csv", FileAccess.ReadWrite, Connection = "team10ohchallenge6orders_STORAGE")] ICloudBlob ProductInformation,
@@ -25,19 +25,22 @@ namespace OH.Challenge6
             if (OrderHeaderDetails != null && OrderLineItems != null && ProductInformation != null)
             {
                 log.LogInformation($"All files there for {id}");
-                
-                var request = new 
+
+                var request = new
                 {
                     orderHeaderDetailsCSVUrl = OrderHeaderDetails.StorageUri.PrimaryUri.ToString(),
                     orderLineItemsCSVUrl =  OrderLineItems.StorageUri.PrimaryUri.ToString(),
-                    productInformationCSVUrl =  ProductInformation.StorageUri.PrimaryUri.ToString(),
+                    productInformationCSVUrl =  ProductInformation.StorageUri.PrimaryUri.ToString()
                 };
 
                 var client = new HttpClient();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //string reqbody = "{\"orderHeaderDetailsCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-OrderHeaderDetails.csv\",\"orderLineItemsCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-OrderLineItems.csv\",\"productInformationCSVUrl\":\"https://team10ohchallenge6orders.blob.core.windows.net/orders/20220120093900-ProductInformation.csv\"}";
+
                 var response = await client.PostAsJsonAsync("https://serverlessohmanagementapi.trafficmanager.net/api/order/combineOrderContent", request);
 
-                var sample = await response.RequestMessage.Content.ReadAsStringAsync();
+                //var sample = await response.RequestMessage.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
                 {
